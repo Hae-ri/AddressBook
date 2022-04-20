@@ -28,6 +28,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.Toolkit;
+import java.awt.Color;
 
 public class WinAdd extends JDialog {
 
@@ -40,6 +42,8 @@ public class WinAdd extends JDialog {
 	private JTextField txtAddress;
 	private JButton btnInsert = new JButton("추가");
 	private String pathName="";
+	private JTextField txtDoro;
+	private WinDoroSearch dialog;
 
 	/**
 	 * Create the dialog.
@@ -62,6 +66,7 @@ public class WinAdd extends JDialog {
 	}
 
 	public WinAdd() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\workspace\\JAVA\\AddressBook\\image\\add.png"));
 		setTitle("회원 등록");
 		setBounds(100, 100, 450, 285);
 		getContentPane().setLayout(new BorderLayout());
@@ -85,7 +90,19 @@ public class WinAdd extends JDialog {
 		contentPanel.add(txtName);
 		txtName.setColumns(10);
 		
-		JLabel lblPic = new JLabel("picture");
+		JLabel lblPic = new JLabel("");
+		
+		ImageIcon icon = new ImageIcon("C:\\workspace\\JAVA\\AddressBook\\image\\picture.png");
+		Image pic = icon.getImage();
+		pic = pic.getScaledInstance(115, 130, Image.SCALE_SMOOTH);
+		ImageIcon imgCon = new ImageIcon(pic);
+		lblPic.setIcon(imgCon);
+		
+		
+		
+		lblPic.setToolTipText("\uB354\uBE14\uD074\uB9AD\uD558\uC5EC \uC0AC\uC9C4 \uCD94\uAC00");
+		
+		
 		lblPic.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -105,15 +122,13 @@ public class WinAdd extends JDialog {
 					Image pic = image.getImage();
 					pic = pic.getScaledInstance(115, 130, Image.SCALE_SMOOTH);
 					ImageIcon imgCon = new ImageIcon(pic);
-					lblPic.setText("");
 					lblPic.setIcon(imgCon);	
 					
 					pathName = pathName.replaceAll("\\\\", "\\\\\\\\");
 			}
 			}
 		});
-		lblPic.setBackground(SystemColor.activeCaption);
-		lblPic.setOpaque(true);
+
 		lblPic.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPic.setBounds(12, 13, 115, 130);
 		contentPanel.add(lblPic);
@@ -161,7 +176,7 @@ public class WinAdd extends JDialog {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_ENTER)
-					txtAddress.requestFocus();
+					txtDoro.requestFocus();
 			}
 		});
 		txtPhone3.setColumns(10);
@@ -181,13 +196,7 @@ public class WinAdd extends JDialog {
 		contentPanel.add(lblNewLabel_3);
 		
 		txtAddress = new JTextField();
-		txtAddress.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ENTER)
-					btnInsert.requestFocus();
-			}
-		});
+
 		txtAddress.setBounds(67, 153, 340, 21);
 		contentPanel.add(txtAddress);
 		txtAddress.setColumns(10);
@@ -228,7 +237,32 @@ public class WinAdd extends JDialog {
 				}
 			}
 		});
-		btnInsert.setBounds(171, 196, 97, 23);
+		btnInsert.setBounds(310, 194, 97, 23);
 		contentPanel.add(btnInsert);
+		
+		JLabel lblNewLabel = new JLabel("\uB3C4\uB85C\uBA85 :");
+		lblNewLabel.setBounds(12, 190, 57, 15);
+		contentPanel.add(lblNewLabel);
+		
+		txtDoro = new JTextField();
+		txtDoro.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					dialog = new WinDoroSearch(txtDoro.getText()); // 새로운 대화상자에 텍스트필드의 내용을 전달=>다른 폼에 정보 전달
+					dialog.setModal(true);
+					dialog.setVisible(true);
+					
+					// 다른 폼으로부터 정보를 가져와 특정한 컴포넌트(TextField)에 쓴다.
+					txtAddress.setText(dialog.getAddress() +" ");
+					txtAddress.requestFocus();
+					JOptionPane.showMessageDialog(null, "나머지 주소를 입력하세요.");
+					
+				}
+			}
+		});
+		txtDoro.setBounds(81, 187, 116, 21);
+		contentPanel.add(txtDoro);
+		txtDoro.setColumns(10);
 	}
 }
